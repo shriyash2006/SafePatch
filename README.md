@@ -49,6 +49,48 @@ The example scan writes:
 The CLI intentionally exits with code `2` when it finds a blocked command.
 That is a reportable policy result, not a crash.
 
+## Browser demo
+
+SafePatch includes a dependency-free browser demo backed by the real scanning,
+approval, execution, and report-verification workflow. From the repository root,
+start the loopback-only server:
+
+```bash
+PYTHONPATH=src python3 -m safepatch web
+```
+
+Open <http://127.0.0.1:8765>. Choose the clean test plan or the risky installer
+plan, then click **Run demo scan**. The clean plan lets you run the example test
+command after scanning; the risky plan shows how SafePatch blocks a remote shell
+installer without executing it. Use **Verify hash** to check the report's
+tamper-evident hash. Stop the server with `Ctrl+C`.
+
+The demo intentionally uses only the allowlisted `examples/demo_repo` and the
+two checked-in example plans. It binds to `127.0.0.1` by default and stores its
+temporary reports outside the repository.
+
+## Deploy to Render
+
+The repository includes a pinned Docker image definition and a Render Blueprint.
+After pushing the repository to GitHub:
+
+1. Open the [Render Dashboard](https://dashboard.render.com/).
+2. Choose **New → Blueprint** and select this repository.
+3. Confirm the `safepatch-demo` web service from `render.yaml` and deploy it.
+
+Render builds `Dockerfile`, binds the service to `0.0.0.0`, uses Render's `PORT`
+value, and checks `/` for health. The Blueprint uses the free plan and deploys
+only the checked-in demo data; it does not require an API key or database.
+
+For a local container smoke test:
+
+```bash
+docker build -t safepatch-demo .
+docker run --rm -p 10000:10000 -e PORT=10000 safepatch-demo
+```
+
+Open <http://127.0.0.1:10000> after the container starts.
+
 ## Safe command workflow
 
 `scan` never executes a command:

@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: safepatch-demo
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    autoDeployTrigger: checksPass

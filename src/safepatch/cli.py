@@ -183,6 +183,13 @@ def _verify(args: argparse.Namespace) -> int:
     return 0 if valid else 2
 
 
+def _web(args: argparse.Namespace) -> int:
+    from .demo_server import serve
+
+    serve(args.host, args.port)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="safepatch", description="Safety gate and proof report for AI coding agents")
     subparsers = parser.add_subparsers(dest="subcommand", required=True)
@@ -210,6 +217,11 @@ def build_parser() -> argparse.ArgumentParser:
     verify = subparsers.add_parser("verify", help="Verify a report's tamper-evident hash")
     verify.add_argument("--report", required=True)
     verify.set_defaults(handler=_verify)
+
+    web = subparsers.add_parser("web", help="Start the local browser demo")
+    web.add_argument("--host", default="127.0.0.1", help="Interface to bind (loopback by default)")
+    web.add_argument("--port", type=int, default=8765, help="Port to bind")
+    web.set_defaults(handler=_web)
     return parser
 
 

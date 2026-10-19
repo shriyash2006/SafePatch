@@ -17,3 +17,6 @@ safepatch = "safepatch.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+safepatch = ["web/*.html", "web/*.js", "web/*.css"]
